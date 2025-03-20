@@ -30,4 +30,8 @@ public class Person
     public int GetAge(){ return Age; }
     public void SetAge(int age){ Age = age; }
 
+    public String ToString()
+    {
+        return GetName() + " " + GetAge();
+    }
 }

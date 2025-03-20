@@ -1,5 +1,3 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main
 {
     // Main function for starting any program in Java
@@ -17,7 +15,7 @@ public class Main
         // Enuemrations are a way to have a visible "Text" whilst being an efficient comparison under the hood
         // https://www.w3schools.com/java/java_enums.asp
         // For adding custom values, see https://www.baeldung.com/java-enum-values
-        enum EExampleEnumeration { StateOne, StateTwo, StateThree };
+        enum EExampleEnumeration { StateOne, StateTwo, StateThree, StateFour };
         EExampleEnumeration EnumVariableType = EExampleEnumeration.StateOne;
 
         // Control Flow (2 Main Types)
@@ -57,7 +55,7 @@ public class Main
         // You can also attach multiple condiitons near each other using and (&&) and or (||)
         // Note that if you put things between brackets, they take precedence in execution order
         // Note that if one condition fails, then the if statement will "short circuit" which is a fancy name for exit out early
-        if( 3 == 3 && (4 > 3 || 4 <= 3))
+        if( 3 == 4 && (4 > 3 || 4 <= 3))
         {
             // Do some work
         }
@@ -92,7 +90,7 @@ public class Main
         // You can also stick them inside each other! (to search multidimensional data structures)
         // https://www.w3schools.com/java/java_for_loop.asp
         String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
-        for( int i = 0; i < cars.length; ++i )
+        for ( int i = 0; i < cars.length; ++i )
         {
             // Special keyword used when we want to ignore this iteration
             if(i == 1)
@@ -143,6 +141,7 @@ public class Main
         // https://www.w3schools.com/java/java_methods.asp
         // https://www.w3schools.com/java/java_methods_param.asp
         PrintString("Hello World! :D");
+        PrintString("Hello World", 2);
     }
 
     // If it's void it returns nothing, otherwise it can return any type!
@@ -157,6 +156,14 @@ public class Main
     // Also Java doesn't have defualt parameters ... sad :l
     public static boolean PrintString(String TextToPrint, int someNumber)
     {
+        --someNumber;
+
+        System.out.println(someNumber);
+
+        if(someNumber > 0) {
+            PrintString(TextToPrint, someNumber);
+        }
+
         // Returns a specific value! How exciting!
         return true;
     }

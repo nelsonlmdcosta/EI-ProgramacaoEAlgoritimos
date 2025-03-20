@@ -1,4 +1,4 @@
-﻿public class Triangle implements ICalculableArea
+public class Triangle implements ICalculableArea
 {
     private float Base;
     private float Height;

@@ -13,9 +13,13 @@ public class Main
 {
     public static void main(String[] args)
     {
+
         // Simple Representation Of Encapsulation
         Person Nelson = new Person("Nelson Costa", 34);
-        System.out.println(Nelson.GetName());
+        System.out.println(Nelson.ToString());
+
+        Person Marcelo = new Person("Marcelo Lopes", 20);
+        System.out.println(Marcelo.ToString());
 
         // This is a more complex example of Abstraction/Inheritance
         Cat CatObject = new Cat("Meow");
@@ -40,7 +44,17 @@ public class Main
         for(int i = 0; i < AnimalArray.length; ++i)
         {
             AnimalArray[i].MakeNoise();
+
+            String IsACat = AnimalArray[i] instanceof Cat ? "true" : "false";
+            System.out.println( IsACat );
         }
+
+
+
+
+//        [ Ani | Ani | Ani | Cat | Cat ]
+//        [ Ani | Ani | Ani | Dog | Dog | Dog ]
+
 
         // Sometimes we don't want objects to be so directly related, so we can alternatively aim for "Composition" rather than "Inheritance"
         // In this case we only care about objects, that follow the rule that use this specific funcion.
@@ -49,5 +63,8 @@ public class Main
         {
             System.out.println("ShapeID " + i + " Has An Area Of " + Shapes[i].CalculateArea());
         }
+
+
+
     }
 }
