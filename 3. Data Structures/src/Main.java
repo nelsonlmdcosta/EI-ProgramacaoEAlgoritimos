@@ -14,6 +14,10 @@ public class Main
         // Arrays should generally be the prefered method of storing data as they are lightning fast. And CPU Cache Friendly!
         String[] Names = new String[]{ "Nelson", "Bob", "Marcelo", "Patricio", "Angela", "Flismina" };
 
+        // System.out.println(Names[5]);
+        // (Apontador A Memoria) + (Tamanho da memoria * indicie)
+        // 0x000023412F
+
         // We Can Iterate Over Any Element And Print It Out
         System.out.println("Printing Names");
         for(int i = 0; i < Names.length; ++i)
@@ -22,7 +26,7 @@ public class Main
         }
 
         // We Cannot Insert But We Can Modify A Specific Element
-        Names[0] = "Jose";
+        Names[1] = "Jose";
         System.out.println("\nPrinting Names After Modification");
         for(int i = 0; i < Names.length; ++i)
         {
@@ -38,6 +42,7 @@ public class Main
         List<String> NamesInArrayToListConversion = Arrays.asList(Names);
         // NOTE: We can however change this one as it's a clean construction
         List<String> NamesAsArrayListButEmpty = new ArrayList<String>( Arrays.asList(Names) );
+
 
         // You can iterate over these like any other Array
         System.out.println("\nPrinting Names In List");
@@ -55,7 +60,13 @@ public class Main
         }
 
         // You can dynamically insert or remove from the structure
-        NamesAsArrayListButEmpty.remove("Nelson");
+
+        String TempToMove = NamesAsArrayListButEmpty.get(0);
+        NamesAsArrayListButEmpty.set(0, NamesAsArrayListButEmpty.get(NamesAsArrayListButEmpty.size() - 1));
+        NamesAsArrayListButEmpty.set(NamesAsArrayListButEmpty.size() - 1, null);
+
+
+        //NamesAsArrayListButEmpty.remove("Nelson");
         System.out.println("\nPrinting Names After Removing");
         for(int i = 0; i < NamesAsArrayListButEmpty.size(); ++i)
         {
@@ -102,7 +113,7 @@ public class Main
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println("/////////////////////////////////////////////////////////////////////////////////////////////////");
-        System.out.println("// Stacks (FIFO) and Queues (FIFO) ");
+        System.out.println("// Stacks (FILO) and Queues (FIFO) ");
         System.out.println("/////////////////////////////////////////////////////////////////////////////////////////////////");
 
         // https://www.geeksforgeeks.org/stack-class-in-java/
@@ -149,7 +160,7 @@ public class Main
         System.out.println("/////////////////////////////////////////////////////////////////////////////////////////////////");
         System.out.println("// Graphs");
         System.out.println("/////////////////////////////////////////////////////////////////////////////////////////////////");
-        
+
         // https://www.geeksforgeeks.org/introduction-to-tree-data-structure/
     }
 }
