@@ -1,7 +1,11 @@
+/*
+
 package EntityComponent;
+
 
 import MapParser.MapGraph;
 import MapParser.MapNode;
+import WorldScene.WorldScene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,9 +37,15 @@ public class PlayerComponent extends AEntityComponent implements IUpdateableComp
     @Override
     public void Start()
     {
+        Camera = WorldScene.FindFirstComponent();
+
+        MapGraph = WorldScene.MapGraph;
+
         bucketTexture = new Texture("Images/bucket.png");
         bucketSprite = new Sprite(bucketTexture); // Initialize the sprite based on the texture
         bucketSprite.setSize(1,1); // Define the size of the sprite
+
+
     }
 
     @Override
@@ -153,25 +163,7 @@ public class PlayerComponent extends AEntityComponent implements IUpdateableComp
         bucketSprite.draw(Batch);
     }
 
-    public Vector2 DeprojectMousePositionToWorld(Vector2 v)
-    {
-        // Get screen coordinates (pixels)
-        Vector3 screenCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-        // Unproject to world coordinates
-        Vector3 worldCoords = Camera.RenderCamera().unproject(screenCoords);
-
-        // Calculate grid coordinates
-        //int gridX = (int) Math.floor(worldCoords.x / tileWidth);
-        //int gridY = (int) Math.floor(worldCoords.y / tileHeight);
-
-        //Vector3 vc = Camera.RenderCamera().unproject(new Vector3(v.x, v.y, 0));
-        return new Vector2(worldCoords.x, worldCoords.y);
-    }
-
-    public Vector2 ProjectMousePositionToWorld(Vector2 v)
-    {
-        Vector3 vc = Camera.RenderCamera().project(new Vector3(v.x, v.y, 0));
-        return new Vector2(vc.x, vc.y);
-    }
 }
+
+*/

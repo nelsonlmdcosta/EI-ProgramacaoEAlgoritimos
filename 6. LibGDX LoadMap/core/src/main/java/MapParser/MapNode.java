@@ -1,5 +1,7 @@
 package MapParser;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.ArrayList;
 
 public class MapNode
@@ -21,5 +23,10 @@ public class MapNode
             NeighbouringNodes.add(OtherNode);
             OtherNode.AddOneWayConnectionTo(this);
         }
+    }
+
+    public Vector2 GetPosition()
+    {
+        return new Vector2(CellX, CellY);
     }
 }

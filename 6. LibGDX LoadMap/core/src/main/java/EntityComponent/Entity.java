@@ -1,11 +1,26 @@
 package EntityComponent;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import WorldScene.WorldScene;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Entity
 {
+    public Entity(WorldScene WorldSceneContext, String EntityName, List<Integer> EntityTags)
+    {
+        this.EntityName = EntityName;
+        this.EntityTags = EntityTags;
+        this.WorldScene = WorldSceneContext;
+    }
+
+    public String EntityName;
+    public List<Integer> EntityTags;
+
+    public WorldScene WorldScene = null;
+
     private ArrayList<AEntityComponent> EntityComponents = new ArrayList<>();
 
     // Cache These For Faster Processing

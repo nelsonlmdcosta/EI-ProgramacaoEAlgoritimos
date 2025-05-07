@@ -21,6 +21,8 @@ public class MapParser
 
     public MapGraph MapGraph = new MapGraph();
 
+    public MapNode PlayerStart = null;
+
     public void Initialize()
     {
         LoadSpritesAndRegion();
@@ -41,9 +43,9 @@ public class MapParser
         //for (int i = 0; i < Lines.size(); i++)
         //   System.out.println(Lines.get(i));
 
-        if(Lines.get(0).contains(","))
+        if(Lines.get(Lines.size()-1).contains(","))
         {
-            String LineToTrim = Lines.get(0);
+            String LineToTrim = Lines.get(Lines.size()-1);
             String TrimmedX = LineToTrim.substring(0, LineToTrim.indexOf(",")).trim();
             String TrimmedY = LineToTrim.substring(LineToTrim.indexOf(",") + 1, LineToTrim.length()).trim();
 
@@ -54,11 +56,11 @@ public class MapParser
 
         // Parse Map Data Into A Useable Layout
         boolean[][] IsSpotFilled = new boolean[DimensionX][DimensionY];
-        for(int Y = 1; Y <= DimensionY; ++Y)
+        for(int Y = 0; Y < DimensionY; ++Y)
         {
             for(int X = 0; X < DimensionX; ++X)
             {
-                IsSpotFilled[X][Y-1] = Lines.get(Y).charAt(X) != ' ';
+                IsSpotFilled[X][DimensionY - 1 - Y] = Lines.get(Y).charAt(X) != ' ';
             }
         }
 
@@ -72,15 +74,15 @@ public class MapParser
                     continue;
 
                 boolean LeftValid   = IsValidIndex(X - 1, 0, DimensionX - 1);
-                boolean TopValid    = IsValidIndex(Y - 1, 0, DimensionY - 1);
+                boolean TopValid    = IsValidIndex(Y + 1, 0, DimensionY - 1);
                 boolean RightValid  = IsValidIndex(X + 1, 0, DimensionX - 1);
-                boolean BottomValid = IsValidIndex(Y + 1, 0, DimensionY - 1);
+                boolean BottomValid = IsValidIndex(Y - 1, 0, DimensionY - 1);
 
                 // Top Left
                 boolean HasLeftNeighbour   = IsValidIndex(X - 1, 0, DimensionX - 1) ? IsSpotFilled[X - 1][Y] : false;
-                boolean HasTopNeighbour    = IsValidIndex(Y - 1, 0, DimensionY - 1) ? IsSpotFilled[X][Y - 1] : false;
+                boolean HasTopNeighbour    = IsValidIndex(Y + 1, 0, DimensionY - 1) ? IsSpotFilled[X][Y + 1] : false;
                 boolean HasRightNeighbour  = IsValidIndex(X + 1, 0, DimensionX - 1) ? IsSpotFilled[X + 1][Y] : false;
-                boolean HasBottomNeighbour = IsValidIndex(Y + 1, 0, DimensionY - 1) ? IsSpotFilled[X][Y + 1] : false;
+                boolean HasBottomNeighbour = IsValidIndex(Y - 1, 0, DimensionY - 1) ? IsSpotFilled[X][Y - 1] : false;
 
                 // We Only Support 3x3 No Weird Edges/Protrusions
                 Texture SlotTexture = GetTextureFromNeighbours(HasLeftNeighbour, HasTopNeighbour, HasRightNeighbour, HasBottomNeighbour);
@@ -93,6 +95,20 @@ public class MapParser
         }
 
         GeneratePathingFromMapLayout(IsSpotFilled);
+
+        // Let's Quickly Find The Player Start, Its The P In The Lines
+        for(int Y = 0; Y < DimensionY; ++Y)
+        {
+            for(int X = 0; X < DimensionX; ++X)
+            {
+                if(Lines.get(Y).charAt(X) == 'P')
+                {
+                    PlayerStart = MapGraph.GetNode(X, DimensionY - 1 - Y);
+
+                    break;
+                }
+            }
+        }
     }
 
     private void GeneratePathingFromMapLayout(boolean[][] IsSpotFilled)
@@ -204,7 +220,7 @@ public class MapParser
                     continue;
 
                 int PosX = X;
-                int PosY = DimensionY - 1 - Y; // Invert Y!
+                int PosY = Y; // Invert Y!
 
                 SpriteBatcher.draw(Sprites[X][Y], PosX, PosY, 1, 1);
                 //Sprites[X][Y].draw(SpriteBatcher);
