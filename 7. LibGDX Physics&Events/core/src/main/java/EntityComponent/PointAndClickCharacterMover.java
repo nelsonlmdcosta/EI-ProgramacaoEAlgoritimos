@@ -1,5 +1,7 @@
 package EntityComponent;
 
+import Events.IPlayerReachedEndOfPathReceiver;
+import Events.PlayerReachedEndOfPathEvent;
 import MapParser.MapGraph;
 import MapParser.MapNode;
 import com.badlogic.gdx.Gdx;
@@ -10,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.List;
 
-public class PointAndClickCharacterMover extends AEntityComponent implements IUpdateableComponent
+public class PointAndClickCharacterMover extends AEntityComponent implements IUpdateableComponent, IPlayerReachedEndOfPathReceiver
 {
     private SpriteRendererComponent SpriteRenderer;
     private CameraComponent Camera;
@@ -20,6 +22,8 @@ public class PointAndClickCharacterMover extends AEntityComponent implements IUp
 
     private boolean AllowDebugToConsole = true;
     float Speed = 10.0f;
+
+    PlayerReachedEndOfPathEvent PlayerReachedEndOfPathEvent = new PlayerReachedEndOfPathEvent();
 
     @Override
     public void Start()
@@ -31,6 +35,8 @@ public class PointAndClickCharacterMover extends AEntityComponent implements IUp
         Camera = AssignedEntity.WorldScene.FindFirstEntityWithTag("Camera").GetFirstComponentOfType(CameraComponent.class);
 
         SpriteRenderer.SetPosition(AssignedEntity.WorldScene.Map.PlayerStart.GetPosition());
+
+        PlayerReachedEndOfPathEvent.AddObserver(this);
     }
 
     @Override
@@ -71,9 +77,13 @@ public class PointAndClickCharacterMover extends AEntityComponent implements IUp
             {
                 CurrentPath.remove(0);
 
+                // Means we reached the end
                 if(CurrentPath.size() == 0)
                 {
                     CurrentPath = null;
+
+                    PlayerReachedEndOfPathEvent.InvokeEvent();
+
                     return;
                 }
 

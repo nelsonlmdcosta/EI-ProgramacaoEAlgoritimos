@@ -7,8 +7,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.some_example_name.ProjectConstants;
 import io.github.some_example_name.ProjectSettings;
 
 import java.util.ArrayList;
@@ -33,6 +36,10 @@ public class WorldScene
     ArrayList<CameraComponent> Cameras = new ArrayList<>();
 
     public MapParser Map;
+
+    public World PhysicsWorld = new World(new Vector2(0, -10), true);
+    private float accumulator = 0;
+    //Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
     Texture GridLayoutSprite;
 
@@ -65,6 +72,16 @@ public class WorldScene
         for(int i = 0; i < SceneEntities.size(); ++i)
         {
             SceneEntities.get(i).Update(DeltaTime);
+        }
+
+        // https://libgdx.com/wiki/extensions/physics/box2d
+        // Allow the physics world to fixup any of our movements
+        float frameTime = Math.min(DeltaTime, 0.25f);
+        accumulator += frameTime;
+        while (accumulator >= ProjectConstants.Physics_Timestep)
+        {
+            PhysicsWorld.step(ProjectConstants.Physics_Timestep, ProjectConstants.Physics_VelocityIterations, ProjectConstants.Physics_PositionIterations);
+            accumulator -= ProjectConstants.Physics_Timestep;
         }
     }
 
