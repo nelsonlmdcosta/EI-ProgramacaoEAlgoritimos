@@ -52,6 +52,7 @@ public class CharacterSpriteAnimator extends AEntityComponent implements IUpdate
         Timer += DeltaTime;
 
 
+        // Override For When We Need To Be Idle
         // This means we're stopped so let's use the last cached direction and force the section to 1 which is the idle one (for Kaduki, so you'd need this to be some sort of param or seperate states.
         if(CurrentDirection.len() == 0.0f)
         {
@@ -67,10 +68,6 @@ public class CharacterSpriteAnimator extends AEntityComponent implements IUpdate
 
             Timer = 0.0f;
             AnimationOffset = 0;
-        }
-        else
-        {
-
         }
 
         // TODO: Check for nulls! Naughty naughty! :p
@@ -93,9 +90,6 @@ public class CharacterSpriteAnimator extends AEntityComponent implements IUpdate
         SpriteRenderer.SpriteToRender.setRegion(SpriteRegion.get(OverrideAnimationSection ? 1 : AnimationOffset));
 
         PreviousDirection.set(CurrentDirection);
-
-        System.out.println(AnimationOffset);
-
     }
 
     @Override

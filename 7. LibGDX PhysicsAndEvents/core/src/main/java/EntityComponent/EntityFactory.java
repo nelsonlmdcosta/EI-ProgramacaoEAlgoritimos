@@ -65,12 +65,22 @@ public class EntityFactory
 
     public static Entity CreateRockObject( WorldScene WorldSceneParent )
     {
-        List<Integer> EntityTags = new ArrayList<Integer>(Arrays.asList(HashString.GenerateHashFromString("Player")));
-        Entity RockObject = new Entity(WorldSceneParent, "Player", EntityTags);
+        List<Integer> EntityTags = new ArrayList<Integer>(Arrays.asList(HashString.GenerateHashFromString("Rock")));
+        Entity RockObject = new Entity(WorldSceneParent, "Rock Obstacle", EntityTags);
 
         RockObject.AddComponent( new SpriteRendererComponent("Images/Rock/Rock.png") );
         RockObject.AddComponent( new RectangleCollider(BodyDef.BodyType.StaticBody, false, true, 0.5f, 0.5f, new Vector2(0.5f, 0.5f)) );
 
         return RockObject;
+    }
+
+    public static Entity CreateBasicTrigger( WorldScene WorldSceneParent )
+    {
+        List<Integer> EntityTags = new ArrayList<Integer>(Arrays.asList(HashString.GenerateHashFromString("Trigger")));
+        Entity TriggerEntity = new Entity(WorldSceneParent, "Trigger Obstacle", EntityTags);
+
+        TriggerEntity.AddComponent( new RectangleCollider(BodyDef.BodyType.StaticBody, true, true, 0.5f, 0.5f, new Vector2(0.5f, 0.5f)) );
+
+        return TriggerEntity;
     }
 }

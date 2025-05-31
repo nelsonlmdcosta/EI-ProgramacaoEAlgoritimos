@@ -58,6 +58,8 @@ public class WorldScene implements ContactListener
         SceneEntities.add(EntityFactory.CreateRockObject(this));
         SceneEntities.get(SceneEntities.size()-1).GetFirstComponentOfType(Transform.class).SetPosition(5,3);
 
+        SceneEntities.add(EntityFactory.CreateBasicTrigger(this));
+        SceneEntities.get(SceneEntities.size()-1).GetFirstComponentOfType(Transform.class).SetPosition(3,3);
 
 
         //SceneEntities.add(EntityFactory.CreateHealthWidget(this));
