@@ -60,7 +60,7 @@ public class Entity
     }
 
     // Add Component
-    public <T extends AEntityComponent> T AddComponent(AEntityComponent ComponentToAdd)
+    public <T extends AEntityComponent> T AddComponent(T ComponentToAdd)
     {
         EntityComponents.add(ComponentToAdd);
         ComponentToAdd.Entity(this);
@@ -73,7 +73,7 @@ public class Entity
         if(ComponentToAdd instanceof IRenderableComponent)
             RenderableComponents.add((IRenderableComponent)ComponentToAdd);
 
-        return (T)ComponentToAdd;
+        return ComponentToAdd;
     }
 
     // Remove Component

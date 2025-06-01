@@ -4,6 +4,7 @@ import EntityComponent.Animation.CharacterSpriteAnimator;
 import EntityComponent.Camera.CameraComponent;
 import EntityComponent.Camera.CameraManualMoverComponent;
 import EntityComponent.Collision.CircleCollider;
+import EntityComponent.Collision.CollisionDebugComponent;
 import EntityComponent.Collision.RectangleCollider;
 import EntityComponent.Health.HealthWidget;
 import EntityComponent.Player.EightDirectionalMovement;
@@ -32,6 +33,7 @@ public class EntityFactory
 
         // Physics Components
         PlayerObject.AddComponent( new CircleCollider(BodyDef.BodyType.DynamicBody, false, true, 0.5f) );
+        PlayerObject.AddComponent( new CollisionDebugComponent() );
 
         // Movement Components
         //PlayerObject.AddComponent( new PointAndClickCharacterMover() );

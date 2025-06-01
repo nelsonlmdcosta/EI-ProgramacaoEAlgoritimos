@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 // https://libgdx.com/wiki/extensions/physics/box2d
 
 
-public abstract class ACollider extends AEntityComponent implements IOnCollisionEnter, IOnCollisionExit
+public abstract class ACollider extends AEntityComponent
 {
     protected Shape CollisionShape = null;
 
@@ -20,6 +20,12 @@ public abstract class ACollider extends AEntityComponent implements IOnCollision
 
     Body PhysicsBody  = null;
     Fixture PhysicsFixture = null;
+
+    public EventDispatcherV2<IOnCollisionEnter> OnCollisionEnterEvent = new EventDispatcherV2<IOnCollisionEnter>(IOnCollisionEnter.class);
+    public EventDispatcherV2<IOnCollisionExit>  OnCollisionExitEvent  = new EventDispatcherV2<IOnCollisionExit> (IOnCollisionExit.class );
+
+    public EventDispatcherV2<IOnTriggerEnter> OnTriggerEnterEvent = new EventDispatcherV2<IOnTriggerEnter>(IOnTriggerEnter.class);
+    public EventDispatcherV2<IOnTriggerExit>  OnTriggerExitEvent  = new EventDispatcherV2<IOnTriggerExit> (IOnTriggerExit.class );
 
     public void Start()
     {
@@ -42,9 +48,6 @@ public abstract class ACollider extends AEntityComponent implements IOnCollision
         // Finally Set The User Data So We Can Always Reaccess Everything From here
         PhysicsBody.setUserData(this);
         PhysicsFixture.setUserData(this);
-
-        TestC.AddObserver(this);
-        TestT.AddObserver(this);
     }
 
     protected BodyDef GenerateBodyDefinition(BodyDef.BodyType BodyType, boolean FixedRotation)
@@ -112,20 +115,24 @@ public abstract class ACollider extends AEntityComponent implements IOnCollision
         PhysicsBody.setLinearVelocity(Velocity);
     }
 
-    public void NotifyCollisionEnter(ACollider OtherObject)
+    public void NotifyContactEnter(ACollider OtherObject)
     {
-        if(PhysicsFixtureDefinition == null)
+        if(PhysicsFixtureDefinition == null || OtherObject.PhysicsFixtureDefinition == null)
         {
             // Somethings Wrong! :l
             return;
         }
 
-        //PhysicsFixtureDefinition.isSensor == false ? OnCollisionEnterEvent.Invoke(this, OtherObject) : OnTriggerEnterEvent.Invoke(this, OtherObject);
-        TestC.Invoke(this, OtherObject);
+        if(PhysicsFixtureDefinition.isSensor || OtherObject.PhysicsFixtureDefinition.isSensor)
+        {
+            OnTriggerEnterEvent.Invoke(this, OtherObject);
+            return;
+        }
 
+        OnCollisionEnterEvent.Invoke(this, OtherObject);
     }
 
-    public void NotifyCollisionExit(ACollider OtherObject)
+    public void NotifyContactExit(ACollider OtherObject)
     {
         if(PhysicsFixtureDefinition == null)
         {
@@ -133,9 +140,14 @@ public abstract class ACollider extends AEntityComponent implements IOnCollision
             return;
         }
 
-        //PhysicsFixtureDefinition.isSensor == false ? OnCollisionEnterEvent.Invoke(this, OtherObject) : OnTriggerEnterEvent.Invoke(this, OtherObject);
 
-        TestT.Invoke(this, OtherObject);
+        if(PhysicsFixtureDefinition.isSensor)
+        {
+            OnTriggerExitEvent.Invoke(this, OtherObject);
+            return;
+        }
+
+        OnCollisionExitEvent.Invoke(this, OtherObject);
     }
 
     // TODO:  Do Cleanup Here
@@ -143,18 +155,4 @@ public abstract class ACollider extends AEntityComponent implements IOnCollision
     {
 
     }
-
-
-    EventDispatcherV2<IOnCollisionEnter> TestC = new EventDispatcherV2<IOnCollisionEnter>(IOnCollisionEnter.class);
-    EventDispatcherV2<IOnCollisionExit> TestT = new EventDispatcherV2<IOnCollisionExit>(IOnCollisionExit.class);
-
-    public void OnCollisionEnter(ACollider MainObject, ACollider OtherObject)
-    {
-        System.out.println(ConsoleColors.RED_BOLD + "OnCollisionEnter");
-    }
-    public void OnCollisionExit (ACollider MainObject, ACollider OtherObject)
-    {
-        System.out.println(ConsoleColors.RED_BOLD + "OnCollisionExit");
-    }
-
 }

@@ -65,6 +65,7 @@ public class WorldScene implements ContactListener
 
         SceneEntities.add(EntityFactory.CreateCameraObject(this));
         SceneEntities.add(EntityFactory.CreatePlayerObject(this));
+        SceneEntities.get(SceneEntities.size()-1).GetFirstComponentOfType(Transform.class).SetPosition(Map.PlayerStart.GetPosition());
 
         // TODO: Set Rock Via Data
         SceneEntities.add(EntityFactory.CreateRockObject(this));
@@ -205,13 +206,14 @@ public class WorldScene implements ContactListener
     public void beginContact(Contact contact)
     {
         // Let These Objects Know About Each Other I Suppose
-        ACollider ColliderA = (ACollider)contact.getFixtureA().getUserData();
-        ACollider ColliderB = (ACollider)contact.getFixtureB().getUserData();
+        ACollider ColliderA = (ACollider) contact.getFixtureA().getUserData();
+        ACollider ColliderB = (ACollider) contact.getFixtureB().getUserData();
 
-        System.out.println(ColliderA.Entity().EntityName + " hit " + ColliderB.Entity().EntityName);
-
-        ColliderA.NotifyCollisionEnter(ColliderB);
-        ColliderB.NotifyCollisionEnter(ColliderA);
+        if (ColliderA != null && ColliderB != null)
+        {
+            ColliderA.NotifyContactEnter(ColliderB);
+            ColliderB.NotifyContactEnter(ColliderA);
+        }
     }
 
     @Override
@@ -220,10 +222,11 @@ public class WorldScene implements ContactListener
         ACollider ColliderA = (ACollider)contact.getFixtureA().getUserData();
         ACollider ColliderB = (ACollider)contact.getFixtureB().getUserData();
 
-        System.out.println(ColliderA.Entity().EntityName + " hit " + ColliderB.Entity().EntityName);
-
-        ColliderA.NotifyCollisionExit(ColliderB);
-        ColliderB.NotifyCollisionExit(ColliderA);
+        if (ColliderA != null && ColliderB != null)
+        {
+            ColliderA.NotifyContactExit(ColliderB);
+            ColliderB.NotifyContactExit(ColliderA);
+        }
     }
 
     @Override
