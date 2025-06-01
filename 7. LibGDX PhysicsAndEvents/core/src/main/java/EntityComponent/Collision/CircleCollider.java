@@ -1,11 +1,11 @@
 package EntityComponent.Collision;
 
 import EntityComponent.Transform.Transform;
-import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.IOnTransformDirtyFlagCleared;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-public class CircleCollider extends ACollider implements ITransformDirtyFlagCleared
+public class CircleCollider extends ACollider implements IOnTransformDirtyFlagCleared
 {
     Transform TransformComponent = null;
 
@@ -32,15 +32,15 @@ public class CircleCollider extends ACollider implements ITransformDirtyFlagClea
         TransformComponent = Entity.GetFirstComponentOfType(Transform.class);
         if(TransformComponent != null)
         {
-            TransformComponent.OnDirtyFlagCleared.AddObserver(this);
+            TransformComponent.OnTransformDirtyFlagClearedEvent.AddObserver(this);
 
-            PhysicsBody.setTransform(TransformComponent.GetPosition(), TransformComponent.getRotation());
+            PhysicsBody.setTransform(TransformComponent.GetPosition(), TransformComponent.GetRotation());
         }
     }
 
     @Override
     public void OnTransformDirtyFlagCleared()
     {
-        PhysicsBody.setTransform(TransformComponent.GetPosition(), TransformComponent.getRotation());
+        PhysicsBody.setTransform(TransformComponent.GetPosition(), TransformComponent.GetRotation());
     }
 }

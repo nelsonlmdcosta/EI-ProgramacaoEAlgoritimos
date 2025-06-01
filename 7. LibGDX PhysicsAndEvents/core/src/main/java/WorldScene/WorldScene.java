@@ -14,6 +14,7 @@ import Main.ProjectConstants;
 import Main.ProjectSettings;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import EntityComponent.Entity;
 import EntityComponent.Camera.CameraComponent;
@@ -41,6 +42,16 @@ public class WorldScene implements ContactListener
     Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
     Texture GridLayoutSprite;
+
+    // Avoid Constantly Creating New Memory
+    Array<Body> PhysicsBodies;
+
+
+    List<Transform> DirtyTransforms = new ArrayList<Transform>();
+    public void NotifyDirtyTransform(Transform DirtyTransform)
+    {
+        DirtyTransforms.add(DirtyTransform);
+    }
 
     public void CreateWorld()
     {
@@ -74,6 +85,7 @@ public class WorldScene implements ContactListener
         }
 
         PhysicsWorld.setContactListener(this);
+        PhysicsBodies = new Array<>(PhysicsWorld.getBodyCount());
     }
 
     public void UpdateWorld(float DeltaTime)
@@ -83,13 +95,13 @@ public class WorldScene implements ContactListener
             SceneEntities.get(i).Update(DeltaTime);
         }
 
-        // TODO: Can Register The Specific Transforms That Need Updating When They're Dirty
-        for(int i = 0; i < SceneEntities.size(); ++i)
+        // Prepare Dirty Transforms Before The Physics Step, So Physics Is Aware Of Our Changes
+        for(int i = 0; i < DirtyTransforms.size(); ++i)
         {
-            Transform transformComponent = SceneEntities.get(i).GetFirstComponentOfType(Transform.class);
-            if(transformComponent != null && transformComponent.GetIsTransformDirty())
+            Transform transformComponent = DirtyTransforms.get(i);
+            if(transformComponent != null && transformComponent.GetIsTransformDirty()) // This check is to avoid double registers from cleaning up
             {
-                transformComponent.updateTransformMatrix();
+                transformComponent.ClearDirtyTransform();
             }
         }
 
@@ -103,13 +115,16 @@ public class WorldScene implements ContactListener
             accumulator -= ProjectConstants.Physics_Timestep;
         }
 
-        // Dynamic Objects Should Then Be Warning Transform of Update!
-        // TODO: Cache This List Instead Of Throwing It Out Constantly
-        Array<Body> PhysicsBodies = new Array<>(PhysicsWorld.getBodyCount());
+        // Go Through Dynamic Objects And In Turn Update The Transforms
         PhysicsWorld.getBodies(PhysicsBodies);
-
         for(int i = 0; i < PhysicsBodies.size; ++i)
         {
+            // Only Dynamic Bodies Are Affected By Motion Technically So Ignore All Others
+            if(PhysicsBodies.get(i).getType() != BodyDef.BodyType.DynamicBody)
+            {
+                continue;
+            }
+
             ACollider Collider = (ACollider)PhysicsBodies.get(i).getUserData();
             Entity AssociatedEntity = Collider.Entity();
             if(AssociatedEntity != null)
@@ -122,13 +137,13 @@ public class WorldScene implements ContactListener
             }
         }
 
-        // TODO: Can Register The Specific Transforms That Need Updating When They're Dirty
+        // Finally All Those Dirty Transforms, Let's Clear Them Up So Everything Is In The Correct Spot By End Of Update
         for(int i = 0; i < SceneEntities.size(); ++i)
         {
             Transform transformComponent = SceneEntities.get(i).GetFirstComponentOfType(Transform.class);
             if(transformComponent != null && transformComponent.GetIsTransformDirty())
             {
-                transformComponent.updateTransformMatrix();
+                transformComponent.ClearDirtyTransform();
             }
         }
     }

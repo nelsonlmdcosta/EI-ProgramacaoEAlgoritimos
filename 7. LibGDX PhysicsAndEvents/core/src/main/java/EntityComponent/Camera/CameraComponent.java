@@ -2,13 +2,13 @@ package EntityComponent.Camera;
 
 import EntityComponent.AEntityComponent;
 import EntityComponent.Transform.Transform;
-import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.IOnTransformDirtyFlagCleared;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-public class CameraComponent extends AEntityComponent implements ITransformDirtyFlagCleared
+public class CameraComponent extends AEntityComponent implements IOnTransformDirtyFlagCleared
 {
     Transform TransformComponent;
     OrthographicCamera RenderCamera;
@@ -52,6 +52,6 @@ public class CameraComponent extends AEntityComponent implements ITransformDirty
     @Override
     public void OnTransformDirtyFlagCleared()
     {
-        RenderCamera.position.set(TransformComponent.getX(), TransformComponent.getY(), 0);
+        RenderCamera.position.set(TransformComponent.GetPosition().x, TransformComponent.GetPosition().y, 0);
     }
 }

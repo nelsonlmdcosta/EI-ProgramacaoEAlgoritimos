@@ -1,6 +1,6 @@
 package EntityComponent.Transform.Events;
 
-public interface ITransformDirtyFlagCleared
+public interface IOnTransformDirtyFlagCleared
 {
     public abstract void OnTransformDirtyFlagCleared();
 }

@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 // https://libgdx.com/wiki/extensions/physics/box2d
 
 
-public abstract class ACollider extends AEntityComponent implements ICollisionEnterCallback, ICollisionExitCallback
+public abstract class ACollider extends AEntityComponent implements IOnCollisionEnter, IOnCollisionExit
 {
     protected Shape CollisionShape = null;
 
@@ -145,8 +145,8 @@ public abstract class ACollider extends AEntityComponent implements ICollisionEn
     }
 
 
-    EventDispatcherV2<ICollisionEnterCallback> TestC = new EventDispatcherV2<ICollisionEnterCallback>(ICollisionEnterCallback.class);
-    EventDispatcherV2<ICollisionExitCallback> TestT = new EventDispatcherV2<ICollisionExitCallback>(ICollisionExitCallback.class);
+    EventDispatcherV2<IOnCollisionEnter> TestC = new EventDispatcherV2<IOnCollisionEnter>(IOnCollisionEnter.class);
+    EventDispatcherV2<IOnCollisionExit> TestT = new EventDispatcherV2<IOnCollisionExit>(IOnCollisionExit.class);
 
     public void OnCollisionEnter(ACollider MainObject, ACollider OtherObject)
     {

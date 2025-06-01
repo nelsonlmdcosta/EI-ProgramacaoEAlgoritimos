@@ -17,7 +17,7 @@ public class EventDispatcherV2<TInterface>
         public boolean InitializeObserverData(Class<?> InterfaceType, TInterface ObserverToInitialize)
         {
             this.ObjectInterface = ObserverToInitialize;
-            MethodToInvoke = FindMethod( InterfaceType);
+            MethodToInvoke = FindMethod( ObserverToInitialize.getClass() );
 
             return MethodToInvoke != null;
         }

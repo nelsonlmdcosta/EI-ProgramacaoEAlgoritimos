@@ -2,7 +2,7 @@ package EntityComponent.Collision.Events;
 
 import EntityComponent.Collision.ACollider;
 
-public interface ICollisionEnterCallback
+public interface IOnCollisionEnter
 {
     public void OnCollisionEnter(ACollider MainObject, ACollider OtherObject);
 }

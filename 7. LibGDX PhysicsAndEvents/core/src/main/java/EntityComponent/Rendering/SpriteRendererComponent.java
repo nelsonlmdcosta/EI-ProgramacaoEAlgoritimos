@@ -3,14 +3,14 @@ package EntityComponent.Rendering;
 import EntityComponent.AEntityComponent;
 import EntityComponent.IRenderableComponent;
 import EntityComponent.Transform.Transform;
-import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.IOnTransformDirtyFlagCleared;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class SpriteRendererComponent extends AEntityComponent implements IRenderableComponent, ITransformDirtyFlagCleared
+public class SpriteRendererComponent extends AEntityComponent implements IRenderableComponent, IOnTransformDirtyFlagCleared
 {
     public Sprite SpriteToRender;
 
@@ -31,7 +31,7 @@ public class SpriteRendererComponent extends AEntityComponent implements IRender
         TransformComponent = Entity.GetFirstComponentOfType(Transform.class);
         if(TransformComponent != null)
         {
-            TransformComponent.OnDirtyFlagCleared.AddObserver(this);
+            TransformComponent.OnTransformDirtyFlagClearedEvent.AddObserver(this);
         }
     }
 
@@ -44,27 +44,9 @@ public class SpriteRendererComponent extends AEntityComponent implements IRender
     @Override
     public void Render(SpriteBatch Batch)
     {
-
-        //SpriteToRender.getTexture().bind();
-
         Batch.setColor(ColorToTint);
         Batch.draw(SpriteToRender, SpriteToRender.getX(), SpriteToRender.getY(), 1, 1);
         Batch.setColor(Color.WHITE);
-
-
-        //Batch.setColor(ColorToTint);
-
-        //SpriteToRender = new Sprite(new Texture("assets/Images/bucket.png"));
-        //Batch.draw(SpriteToRender.getTexture(), SpriteToRender.getX(), SpriteToRender.getY(), 2, 2); // TODO: These Should Be More Configurable
-
-        //Batch.draw(SpriteToRender.getTexture(), SpriteToRender.getX(), SpriteToRender.getY(), 1, 1, 0, 0, 32, 32);
-
-        //Texture testTexture = new Texture(Gdx.files.internal("Images/bucket.png"));
-
-        // Test drawing the direct texture
-        //Batch.draw(testTexture,0, 0);
-
-        //Batch.setColor(Color.WHITE);
     }
 
     public Vector2 GetSpritePosition()

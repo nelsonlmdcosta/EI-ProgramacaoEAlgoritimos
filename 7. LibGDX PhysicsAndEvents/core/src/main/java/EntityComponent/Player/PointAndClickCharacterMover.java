@@ -5,7 +5,7 @@ import EntityComponent.Camera.CameraComponent;
 import EntityComponent.IUpdateableComponent;
 import EntityComponent.Rendering.SpriteRendererComponent;
 import EntityComponent.Transform.Transform;
-import Events.PlayerReachedEndOfPathEvent;
+import Events.EventDispatcherV2;
 import MapParser.MapGraph;
 import MapParser.MapNode;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +28,7 @@ public class PointAndClickCharacterMover extends AEntityComponent implements IUp
 
     Transform TransformComponent = null;
 
-    PlayerReachedEndOfPathEvent PlayerReachedEndOfPathEvent = new PlayerReachedEndOfPathEvent();
+    EventDispatcherV2<IOnPlayerReachedEndOfPath> PlayerReachedEndOfPathEvent = new EventDispatcherV2<>(IOnPlayerReachedEndOfPath.class);
 
     @Override
     public void Start()
@@ -83,7 +83,7 @@ public class PointAndClickCharacterMover extends AEntityComponent implements IUp
                 {
                     CurrentPath = null;
 
-                    PlayerReachedEndOfPathEvent.InvokeEvent();
+                    PlayerReachedEndOfPathEvent.Invoke();
 
                     return;
                 }
