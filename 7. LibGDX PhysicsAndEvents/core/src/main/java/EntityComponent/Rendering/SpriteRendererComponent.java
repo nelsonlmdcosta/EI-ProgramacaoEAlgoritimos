@@ -3,7 +3,7 @@ package EntityComponent.Rendering;
 import EntityComponent.AEntityComponent;
 import EntityComponent.IRenderableComponent;
 import EntityComponent.Transform.Transform;
-import Events.Transform.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;

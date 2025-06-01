@@ -1,4 +1,4 @@
-package Events.Transform;
+package EntityComponent.Transform.Events;
 
 public interface ITransformDirtyFlagCleared
 {

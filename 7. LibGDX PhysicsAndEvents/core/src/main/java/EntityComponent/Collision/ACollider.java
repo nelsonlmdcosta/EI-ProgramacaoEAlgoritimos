@@ -1,6 +1,8 @@
 package EntityComponent.Collision;
 
 import EntityComponent.AEntityComponent;
+import EntityComponent.Collision.Events.*;
+import Events.EventDispatcherV2;
 import Utils.ConsoleColors;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -9,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 // https://libgdx.com/wiki/extensions/physics/box2d
 
 
-public class ACollider extends AEntityComponent
+public abstract class ACollider extends AEntityComponent implements ICollisionEnterCallback, ICollisionExitCallback
 {
     protected Shape CollisionShape = null;
 
@@ -38,7 +40,11 @@ public class ACollider extends AEntityComponent
         PhysicsFixture = PhysicsBody.createFixture(PhysicsFixtureDefinition);
 
         // Finally Set The User Data So We Can Always Reaccess Everything From here
-        PhysicsBody.setUserData(Entity);
+        PhysicsBody.setUserData(this);
+        PhysicsFixture.setUserData(this);
+
+        TestC.AddObserver(this);
+        TestT.AddObserver(this);
     }
 
     protected BodyDef GenerateBodyDefinition(BodyDef.BodyType BodyType, boolean FixedRotation)
@@ -105,4 +111,50 @@ public class ACollider extends AEntityComponent
     {
         PhysicsBody.setLinearVelocity(Velocity);
     }
+
+    public void NotifyCollisionEnter(ACollider OtherObject)
+    {
+        if(PhysicsFixtureDefinition == null)
+        {
+            // Somethings Wrong! :l
+            return;
+        }
+
+        //PhysicsFixtureDefinition.isSensor == false ? OnCollisionEnterEvent.Invoke(this, OtherObject) : OnTriggerEnterEvent.Invoke(this, OtherObject);
+        TestC.Invoke(this, OtherObject);
+
+    }
+
+    public void NotifyCollisionExit(ACollider OtherObject)
+    {
+        if(PhysicsFixtureDefinition == null)
+        {
+            // Somethings Wrong! :l
+            return;
+        }
+
+        //PhysicsFixtureDefinition.isSensor == false ? OnCollisionEnterEvent.Invoke(this, OtherObject) : OnTriggerEnterEvent.Invoke(this, OtherObject);
+
+        TestT.Invoke(this, OtherObject);
+    }
+
+    // TODO:  Do Cleanup Here
+    public void PreDispose()
+    {
+
+    }
+
+
+    EventDispatcherV2<ICollisionEnterCallback> TestC = new EventDispatcherV2<ICollisionEnterCallback>(ICollisionEnterCallback.class);
+    EventDispatcherV2<ICollisionExitCallback> TestT = new EventDispatcherV2<ICollisionExitCallback>(ICollisionExitCallback.class);
+
+    public void OnCollisionEnter(ACollider MainObject, ACollider OtherObject)
+    {
+        System.out.println(ConsoleColors.RED_BOLD + "OnCollisionEnter");
+    }
+    public void OnCollisionExit (ACollider MainObject, ACollider OtherObject)
+    {
+        System.out.println(ConsoleColors.RED_BOLD + "OnCollisionExit");
+    }
+
 }

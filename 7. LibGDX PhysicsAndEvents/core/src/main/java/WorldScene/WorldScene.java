@@ -1,5 +1,6 @@
 package WorldScene;
 
+import EntityComponent.Collision.ACollider;
 import EntityComponent.Transform.Transform;
 import MapParser.MapParser;
 import com.badlogic.gdx.audio.Music;
@@ -109,7 +110,8 @@ public class WorldScene implements ContactListener
 
         for(int i = 0; i < PhysicsBodies.size; ++i)
         {
-            Entity AssociatedEntity = (Entity)PhysicsBodies.get(i).getUserData();
+            ACollider Collider = (ACollider)PhysicsBodies.get(i).getUserData();
+            Entity AssociatedEntity = Collider.Entity();
             if(AssociatedEntity != null)
             {
                 Transform EntityTransform = AssociatedEntity.GetFirstComponentOfType(Transform.class);
@@ -188,14 +190,25 @@ public class WorldScene implements ContactListener
     public void beginContact(Contact contact)
     {
         // Let These Objects Know About Each Other I Suppose
-        contact.getFixtureA().getUserData();
-        contact.getFixtureB().getUserData();
+        ACollider ColliderA = (ACollider)contact.getFixtureA().getUserData();
+        ACollider ColliderB = (ACollider)contact.getFixtureB().getUserData();
+
+        System.out.println(ColliderA.Entity().EntityName + " hit " + ColliderB.Entity().EntityName);
+
+        ColliderA.NotifyCollisionEnter(ColliderB);
+        ColliderB.NotifyCollisionEnter(ColliderA);
     }
 
     @Override
     public void endContact(Contact contact)
     {
+        ACollider ColliderA = (ACollider)contact.getFixtureA().getUserData();
+        ACollider ColliderB = (ACollider)contact.getFixtureB().getUserData();
 
+        System.out.println(ColliderA.Entity().EntityName + " hit " + ColliderB.Entity().EntityName);
+
+        ColliderA.NotifyCollisionExit(ColliderB);
+        ColliderB.NotifyCollisionExit(ColliderA);
     }
 
     @Override

@@ -2,6 +2,8 @@ package Events;
 
 import java.util.*;
 
+// Older Simpler Version That Uses Abstraction To Call The Invoke Method, it's not flexible enough so look at
+// EventDispatcherV2 that uses reflection to invoke dynamic events and parameters
 public abstract class AEventDispatcher<T>
 {
     protected final List<T> Observers = new ArrayList<T>();

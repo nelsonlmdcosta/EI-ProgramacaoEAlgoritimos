@@ -2,7 +2,7 @@ package EntityComponent.Camera;
 
 import EntityComponent.AEntityComponent;
 import EntityComponent.Transform.Transform;
-import Events.Transform.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;

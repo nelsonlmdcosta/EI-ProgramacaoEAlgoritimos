@@ -1,7 +1,7 @@
 package EntityComponent.Transform;
 
 import EntityComponent.AEntityComponent;
-import Events.Transform.OnTransformDirtyFlagClearedEvent;
+import EntityComponent.Transform.Events.OnTransformDirtyFlagClearedEvent;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;

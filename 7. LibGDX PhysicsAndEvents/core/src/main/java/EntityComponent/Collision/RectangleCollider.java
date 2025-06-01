@@ -1,7 +1,7 @@
 package EntityComponent.Collision;
 
 import EntityComponent.Transform.Transform;
-import Events.Transform.ITransformDirtyFlagCleared;
+import EntityComponent.Transform.Events.ITransformDirtyFlagCleared;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
