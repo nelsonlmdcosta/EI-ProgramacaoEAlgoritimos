@@ -1,7 +1,5 @@
 package Events;
 
-import sun.jvm.hotspot.utilities.Observer;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +7,7 @@ import java.util.List;
 public class EventDispatcherV2<TInterface>
 {
     // This Can Only Be Accessed Inside Of This Class, So We Can Leave It's Members To Be Public For Ease Of Use
+    // It's basically a clean way to encapsulate all the data we need for any observer and invoke it.
     private class ObserverData
     {
         public Method MethodToInvoke;
@@ -63,9 +62,9 @@ public class EventDispatcherV2<TInterface>
         }
     }
 
+    // This needs to be done to avoid Type Erasure in Java :l
+    private final Class<TInterface> InterfaceClass;
     private final List<ObserverData> ObserverData = new ArrayList<ObserverData>();
-
-    private Class<TInterface> InterfaceClass;
 
     public EventDispatcherV2(Class<TInterface> InterfaceClass)
     {
@@ -76,15 +75,22 @@ public class EventDispatcherV2<TInterface>
     // This enforces that the Event is created and specific Interfaces Can Register
     public void AddObserver(TInterface Observer)
     {
-        ObserverData.add(GenerateObserverData( Observer ));
+        ObserverData NewObserver = GenerateObserverData( Observer );
+        if(NewObserver != null)
+            ObserverData.add(NewObserver);
     }
 
     public void RemoveObserver(TInterface observer)
     {
+        // Normally when removing more than one element you reverse the for loop, this will avoid missed indexes,
+        // In this case we remove only one element so we move on once the job is done
         for(int i = 0; i < ObserverData.size(); ++i)
         {
-            if(ObserverData.get(i).ObjectInterface == observer)
+            if (ObserverData.get(i).ObjectInterface == observer)
+            {
                 ObserverData.remove(i);
+                return;
+            }
         }
     }
 
