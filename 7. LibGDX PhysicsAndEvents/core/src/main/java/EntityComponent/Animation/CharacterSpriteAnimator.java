@@ -13,6 +13,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 // Example of creating an animation component, though we could technically just use the "2D Animation" in Libgdx, but if we dont do it how do we learn! Oh the humanity!
+// Also very specific implementation type for the sprite layout
+// We should be generalizing this somehow to make it easier to use between different sheets
 public class CharacterSpriteAnimator extends AEntityComponent implements IUpdateableComponent
 {
     // TODO: Use Texture Regions

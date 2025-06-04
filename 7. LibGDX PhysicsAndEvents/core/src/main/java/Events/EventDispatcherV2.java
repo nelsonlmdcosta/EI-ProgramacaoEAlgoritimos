@@ -1,6 +1,9 @@
 package Events;
 
+import Utils.ConsoleColors;
+
 import java.lang.reflect.Method;
+import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,6 @@ public class EventDispatcherV2<TInterface>
             catch (Exception e)
             {
                 throw new RuntimeException(e); // This should never happen afaik, we're careful with the templating and what's available on purspose including during construction
-                //System.out.println();
             }
         }
 
@@ -49,6 +51,22 @@ public class EventDispatcherV2<TInterface>
                 {
                     if(Interface.isAssignableFrom(InterfaceClass))
                     {
+                        // If There Is A Method Name To Bind, Then let's Search Through The Declared Methods
+                        if(!MethodNameToBind.isEmpty())
+                        {
+                            Method[] InterfaceMethods = Interface.getDeclaredMethods();
+                            for(int i = 0; i < InterfaceMethods.length; ++i)
+                            {
+                                if(InterfaceMethods[i].getName().compareToIgnoreCase(MethodNameToBind) == 0)
+                                {
+                                    return InterfaceMethods[i];
+                                }
+                            }
+
+                            System.out.println(ConsoleColors.RED_BOLD + "EventDispatcherV2::FindMethod - Could not find Method Name: " + MethodNameToBind + " In Interface " + InterfaceClass.getName() );
+                            return null;
+                        }
+
                         return Interface.getDeclaredMethods()[0];
                     }
                 }
@@ -65,11 +83,20 @@ public class EventDispatcherV2<TInterface>
     // This needs to be done to avoid Type Erasure in Java :l
     private final Class<TInterface> InterfaceClass;
     private final List<ObserverData> ObserverData = new ArrayList<ObserverData>();
+    private String MethodNameToBind = "";
 
     public EventDispatcherV2(Class<TInterface> InterfaceClass)
     {
         // We have to do this due to type erasure :(
         this.InterfaceClass = InterfaceClass;
+    }
+
+    // Note: Polymorphic Constructor To Allow Us To Access Multiple Functions Within An Interface
+    public EventDispatcherV2(Class<TInterface> InterfaceClass, String MethodNameToBind)
+    {
+        // We have to do this due to type erasure :(
+        this.InterfaceClass = InterfaceClass;
+        this.MethodNameToBind = MethodNameToBind;
     }
 
     // This enforces that the Event is created and specific Interfaces Can Register
@@ -106,6 +133,7 @@ public class EventDispatcherV2<TInterface>
         }
     }
 
+    // We Try To Generate The Function Pointer, If We Fail We Let The Generated Object Just Be Garbage Collected, As It Goes Outside Scope
     private ObserverData GenerateObserverData(TInterface ObserverToRegister)
     {
         ObserverData NewObserverData = new ObserverData();

@@ -97,56 +97,17 @@ public class WorldScene implements ContactListener
         }
 
         // Prepare Dirty Transforms Before The Physics Step, So Physics Is Aware Of Our Changes
-        for(int i = 0; i < DirtyTransforms.size(); ++i)
-        {
-            Transform transformComponent = DirtyTransforms.get(i);
-            if(transformComponent != null && transformComponent.GetIsTransformDirty()) // This check is to avoid double registers from cleaning up
-            {
-                transformComponent.ClearDirtyTransform();
-            }
-        }
+        ClearDirtyTransforms();
 
         // https://libgdx.com/wiki/extensions/physics/box2d
         // Allow the physics world to fixup any of our movements
-        float frameTime = Math.min(DeltaTime, 0.25f);
-        accumulator += frameTime;
-        while (accumulator >= ProjectConstants.Physics_Timestep)
-        {
-            PhysicsWorld.step(ProjectConstants.Physics_Timestep, ProjectConstants.Physics_VelocityIterations, ProjectConstants.Physics_PositionIterations);
-            accumulator -= ProjectConstants.Physics_Timestep;
-        }
+        UpdatePhysicsWorld(DeltaTime);
 
         // Go Through Dynamic Objects And In Turn Update The Transforms
-        PhysicsWorld.getBodies(PhysicsBodies);
-        for(int i = 0; i < PhysicsBodies.size; ++i)
-        {
-            // Only Dynamic Bodies Are Affected By Motion Technically So Ignore All Others
-            if(PhysicsBodies.get(i).getType() != BodyDef.BodyType.DynamicBody)
-            {
-                continue;
-            }
-
-            ACollider Collider = (ACollider)PhysicsBodies.get(i).getUserData();
-            Entity AssociatedEntity = Collider.Entity();
-            if(AssociatedEntity != null)
-            {
-                Transform EntityTransform = AssociatedEntity.GetFirstComponentOfType(Transform.class);
-                if(EntityTransform != null)
-                {
-                    EntityTransform.SetPosition(PhysicsBodies.get(i).getPosition());
-                }
-            }
-        }
+        PropagatePhysicsChangesToTransform();
 
         // Finally All Those Dirty Transforms, Let's Clear Them Up So Everything Is In The Correct Spot By End Of Update
-        for(int i = 0; i < SceneEntities.size(); ++i)
-        {
-            Transform transformComponent = SceneEntities.get(i).GetFirstComponentOfType(Transform.class);
-            if(transformComponent != null && transformComponent.GetIsTransformDirty())
-            {
-                transformComponent.ClearDirtyTransform();
-            }
-        }
+        ClearDirtyTransforms();
     }
 
     public void RenderWorld()
@@ -202,6 +163,17 @@ public class WorldScene implements ContactListener
         return null;
     }
 
+    private void UpdatePhysicsWorld(float DeltaTime)
+    {
+        float frameTime = Math.min(DeltaTime, 0.25f);
+        accumulator += frameTime;
+        while (accumulator >= ProjectConstants.Physics_Timestep)
+        {
+            PhysicsWorld.step(ProjectConstants.Physics_Timestep, ProjectConstants.Physics_VelocityIterations, ProjectConstants.Physics_PositionIterations);
+            accumulator -= ProjectConstants.Physics_Timestep;
+        }
+    }
+
     @Override
     public void beginContact(Contact contact)
     {
@@ -230,14 +202,46 @@ public class WorldScene implements ContactListener
     }
 
     @Override
-    public void preSolve(Contact contact, Manifold manifold)
-    {
+    public void preSolve(Contact contact, Manifold manifold) {
 
     }
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse contactImpulse)
-    {
+    public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
 
+    private void ClearDirtyTransforms()
+    {
+        for(int i = 0; i < DirtyTransforms.size(); ++i)
+        {
+            Transform transformComponent = DirtyTransforms.get(i);
+            if(transformComponent != null && transformComponent.GetIsTransformDirty()) // This check is to avoid double registers from cleaning up
+            {
+                transformComponent.ClearDirtyTransform();
+            }
+        }
+    }
+
+    private void PropagatePhysicsChangesToTransform()
+    {
+        PhysicsWorld.getBodies(PhysicsBodies);
+        for(int i = 0; i < PhysicsBodies.size; ++i)
+        {
+            // Only Dynamic Bodies Are Affected By Motion Technically So Ignore All Others
+            if(PhysicsBodies.get(i).getType() != BodyDef.BodyType.DynamicBody)
+            {
+                continue;
+            }
+
+            ACollider Collider = (ACollider)PhysicsBodies.get(i).getUserData();
+            Entity AssociatedEntity = Collider.Entity();
+            if(AssociatedEntity != null)
+            {
+                Transform EntityTransform = AssociatedEntity.GetFirstComponentOfType(Transform.class);
+                if(EntityTransform != null)
+                {
+                    EntityTransform.SetPosition(PhysicsBodies.get(i).getPosition());
+                }
+            }
+        }
     }
 }
